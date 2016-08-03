@@ -9,7 +9,7 @@ defmodule Proj.Mixfile do
 
   def project do
     [app: :proj,
-     version: "0.1.0",
+     version: "0.1.1",
      elixir: "~> 1.0",
      compilers: [:proj, :elixir, :app],
      deps: deps,
@@ -38,6 +38,6 @@ defmodule Proj.Mixfile do
   end
 
   defp deps do
-    []
+    [{:ex_doc, ">= 0.0.0", only: :dev}]
   end
 end
