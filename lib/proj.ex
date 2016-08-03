@@ -12,9 +12,15 @@ defmodule Proj do
       {529155, 179699, 0}
   """
 
+  @on_load :load
+
   defstruct [:pj]
 
-  @on_load :load
+  defimpl Inspect, for: Proj do
+    def inspect(proj, _opts) do
+      "#Proj<#{String.trim(Proj.get_def(proj))}>"
+    end
+  end
 
   def load do
     filename = :filename.join(:code.priv_dir(:proj), 'proj_nif')
@@ -26,6 +32,10 @@ defmodule Proj do
   end
 
   def transform({_, _, _}, _from_proj, _to_proj) do
+    raise "NIF not loaded"
+  end
+
+  def get_def(_proj) do
     raise "NIF not loaded"
   end
 end

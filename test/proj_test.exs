@@ -69,4 +69,10 @@ defmodule ProjTest do
     assert round(deg_x * 1000) == round(@buckingham_palace_lon * 1000)
     assert round(deg_y * 1000) == round(@buckingham_palace_lat * 1000)
   end
+
+  test "Proj.get_def/1 returns a string" do
+    {:ok, wgs84} = Proj.from_def(@wgs84_def)
+
+    assert is_binary(Proj.get_def(wgs84))
+  end
 end

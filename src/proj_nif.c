@@ -7,10 +7,13 @@ static ERL_NIF_TERM from_def_nif(ErlNifEnv *env,
                                  int argc, const ERL_NIF_TERM argv[]);
 static ERL_NIF_TERM transform_nif(ErlNifEnv *env,
                                   int argc, const ERL_NIF_TERM argv[]);
+static ERL_NIF_TERM get_def_nif(ErlNifEnv *env,
+                                int argc, const ERL_NIF_TERM argv[]);
 
 static ErlNifFunc nif_funcs[] = {
     {"from_def", 1, from_def_nif, 0},
-    {"transform", 3, transform_nif, 0}
+    {"transform", 3, transform_nif, 0},
+    {"get_def", 1, get_def_nif, 0}
 };
 
 /* Generate relevant exports for NIFs */
@@ -220,4 +223,32 @@ static ERL_NIF_TERM transform_nif(ErlNifEnv *env,
                                              enif_make_double(env, x),
                                              enif_make_double(env, y),
                                              enif_make_double(env, z)));
+}
+
+static ERL_NIF_TERM get_def_nif(ErlNifEnv *env,
+                                int argc, const ERL_NIF_TERM argv[])
+{
+    ERL_NIF_TERM proj_term;
+    struct proj_resource *proj;
+
+    char *def_str;
+    int def_len;
+    ErlNifBinary def_bin;
+
+    if (!enif_get_map_value(env, argv[0], enif_make_atom(env, "pj"), &proj_term)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_resource(env, proj_term, proj_resource_type, (void **)&proj)) {
+        return enif_make_badarg(env);
+    }
+
+    def_str = pj_get_def(proj->pj, 0);
+    def_len = strlen(def_str);
+    enif_alloc_binary(def_len, &def_bin);
+    memcpy(def_bin.data, def_str, def_len);
+
+    pj_dalloc(def_str);
+
+    return enif_make_binary(env, &def_bin);
 }
