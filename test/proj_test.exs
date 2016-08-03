@@ -4,6 +4,14 @@ defmodule ProjTest do
   @wgs84_def "+init=epsg:4326"
   @epsg_27700_def "+init=epsg:27700"
 
+  @deg_rad 0.0174532925
+
+  @buckingham_palace_lon -0.140634
+  @buckingham_palace_lat 51.501476
+
+  @buckingham_palace_lon_rad @buckingham_palace_lon * @deg_rad
+  @buckingham_palace_lat_rad @buckingham_palace_lat * @deg_rad
+
   test "Proj.from_def/1 returns a %Proj{} struct" do
     {:ok, proj} = Proj.from_def(@wgs84_def)
 
@@ -15,13 +23,14 @@ defmodule ProjTest do
     {:ok, wgs84} = Proj.from_def(@wgs84_def)
     {:ok, epsg_27700} = Proj.from_def(@epsg_27700_def)
 
-    result = Proj.transform({-0.140634, 51.501476, 0}, wgs84, epsg_27700)
+    {:ok, result} = Proj.transform({@buckingham_palace_lon_rad,
+                                    @buckingham_palace_lat_rad, 0},
+                                   wgs84, epsg_27700)
 
-    assert (case result do
-              {x, y, z} when is_float(x)
-                        and  is_float(y)
-                        and  is_float(z) -> true
-              _ -> false
-            end), "Expected {float, float, float}"
+    {x, y, z} = result
+
+    assert is_float(x)
+    assert is_float(y)
+    assert is_float(z)
   end
 end

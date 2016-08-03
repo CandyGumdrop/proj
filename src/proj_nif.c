@@ -50,6 +50,43 @@ static void proj_resource_dtor(ErlNifEnv *env, void *obj)
 }
 
 /**
+ * Create an Erlang NIF binary term for a given pj_errno.
+ */
+static ERL_NIF_TERM make_pj_strerrno_binary(ErlNifEnv *env, int perrno)
+{
+    const char *error_str;
+    int error_len;
+    ErlNifBinary error_bin;
+
+    error_str = pj_strerrno(perrno);
+    error_len = strlen(error_str);
+    enif_alloc_binary(error_len, &error_bin);
+    memcpy(error_bin.data, error_str, error_len);
+
+    return enif_make_binary(env, &error_bin);
+}
+
+/**
+ * Get a double from an Erlang NIF term which is either a float or an int.
+ *
+ * Sets *result to the double value and returns true on success, or false on
+ * failure.
+ */
+static int get_number(ErlNifEnv *env, ERL_NIF_TERM term, double *result)
+{
+    int result_int;
+
+    if (enif_get_double(env, term, result)) {
+        return 1;
+    } else if (enif_get_int(env, term, &result_int)) {
+        *result = result_int;
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+/**
  * Use pj_init_plus_ctx() to create a new projPJ.
  *
  * The projPJ is wrapped in a "proj" resource type and then a Proj Elixir struct
@@ -85,21 +122,16 @@ static ERL_NIF_TERM from_def_nif(ErlNifEnv *env,
 
     /* Create the projPJ and return a {:error, "strerror"} tuple */
     if (!(proj->pj = pj_init_plus_ctx(pj_ctx, def_string))) {
-        const char *error_str;
-        int error_len;
-        ErlNifBinary error_bin;
+        ERL_NIF_TERM error_term;
 
-        error_str = pj_strerrno(pj_ctx_get_errno(pj_ctx));
-        error_len = strlen(error_str);
-        enif_alloc_binary(error_len, &error_bin);
-        memcpy(error_bin.data, error_str, error_len);
+        error_term = make_pj_strerrno_binary(env, pj_ctx_get_errno(pj_ctx));
 
         pj_ctx_free(pj_ctx);
         enif_release_resource(proj);
 
         return enif_make_tuple2(env,
                                 enif_make_atom(env, "error"),
-                                enif_make_binary(env, &error_bin));
+                                error_term);
     }
 
     enif_free(def_string);
@@ -125,10 +157,67 @@ static ERL_NIF_TERM from_def_nif(ErlNifEnv *env,
                             proj_ex_struct);
 }
 
+/**
+ * Transform an {x, y, z} tuple from one projection to another using
+ * pj_transform().
+ */
 static ERL_NIF_TERM transform_nif(ErlNifEnv *env,
                                   int argc, const ERL_NIF_TERM argv[])
 {
+    double x, y, z;
+
+    int coords_arity;
+    const ERL_NIF_TERM *coords_terms;
+    ERL_NIF_TERM src_proj_term;
+    ERL_NIF_TERM dst_proj_term;
+
+    struct proj_resource *src_proj;
+    struct proj_resource *dst_proj;
+
+    int transform_errno;
+
+    if (argc != 3) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_tuple(env, argv[0], &coords_arity, &coords_terms)
+        || coords_arity != 3) {
+        return enif_make_badarg(env);
+    }
+
+    if (!(get_number(env, coords_terms[0], &x) &&
+          get_number(env, coords_terms[1], &y) &&
+          get_number(env, coords_terms[2], &z))) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_map_value(env, argv[1], enif_make_atom(env, "pj"), &src_proj_term)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_map_value(env, argv[2], enif_make_atom(env, "pj"), &dst_proj_term)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_resource(env, src_proj_term, proj_resource_type, (void **)&src_proj)) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_resource(env, dst_proj_term, proj_resource_type, (void **)&dst_proj)) {
+        return enif_make_badarg(env);
+    }
+
+    if ((transform_errno = pj_transform(src_proj->pj, dst_proj->pj,
+                                        1, 1, &x, &y, &z))) {
+        return enif_make_tuple2(env,
+                                enif_make_atom(env, "error"),
+                                make_pj_strerrno_binary(env, transform_errno));
+    }
+
     return enif_make_tuple2(env,
-                            enif_make_atom(env, "error"),
-                            enif_make_atom(env, "not_implemented"));
+                            enif_make_atom(env, "ok"),
+                            enif_make_tuple3(env,
+                                             enif_make_double(env, x),
+                                             enif_make_double(env, y),
+                                             enif_make_double(env, z)));
 }
