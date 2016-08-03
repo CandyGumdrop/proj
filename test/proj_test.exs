@@ -82,4 +82,62 @@ defmodule ProjTest do
     assert Map.get(proj, :__struct__) == Proj
     assert is_binary(Map.get(proj, :pj))
   end
+
+  test "Proj.to_deg/1 returns correct values" do
+    coords_rad = {@buckingham_palace_lon_rad,
+                  @buckingham_palace_lat_rad, 123}
+
+    {lon, lat, z} = Proj.to_deg(coords_rad)
+
+    assert round(lon * 1000) == round(@buckingham_palace_lon * 1000)
+    assert round(lat * 1000) == round(@buckingham_palace_lat * 1000)
+    assert z == 123
+  end
+
+  test "Proj.to_rad/1 returns correct values" do
+    coords_deg = {@buckingham_palace_lon,
+                  @buckingham_palace_lat, 123}
+
+    {lon, lat, z} = Proj.to_rad(coords_deg)
+
+    assert round(lon * 100000) == round(@buckingham_palace_lon_rad * 100000)
+    assert round(lat * 100000) == round(@buckingham_palace_lat_rad * 100000)
+    assert z == 123
+  end
+
+  test "Proj.from_known_def/2 returns a Proj struct" do
+    {:ok, proj} = Proj.from_known_def("world", "bng")
+
+    assert Map.get(proj, :__struct__) == Proj
+    assert is_binary(Map.get(proj, :pj))
+  end
+
+  test "Proj.from_epsg/1 returns a Proj struct" do
+    {:ok, proj} = Proj.from_epsg(27700)
+
+    assert Map.get(proj, :__struct__) == Proj
+    assert is_binary(Map.get(proj, :pj))
+  end
+
+  test "Proj.to_lat_lng!/2 returns correct values" do
+    {:ok, epsg_27700} = Proj.from_def(@epsg_27700_def)
+
+    {lat, lon} = Proj.to_lat_lng!({@buckingham_palace_easting,
+                                   @buckingham_palace_northing},
+                                  epsg_27700)
+
+    assert round(lat * 1000) == round(@buckingham_palace_lat * 1000)
+    assert round(lon * 1000) == round(@buckingham_palace_lon * 1000)
+  end
+
+  test "Proj.from_lat_lng!/2 returns correct values" do
+    {:ok, epsg_27700} = Proj.from_def(@epsg_27700_def)
+
+    {easting, northing} = Proj.from_lat_lng!({@buckingham_palace_lat,
+                                              @buckingham_palace_lon},
+                                             epsg_27700)
+
+    assert round(easting) == round(@buckingham_palace_easting)
+    assert round(northing) == round(@buckingham_palace_northing)
+  end
 end
