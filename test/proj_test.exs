@@ -75,4 +75,11 @@ defmodule ProjTest do
 
     assert is_binary(Proj.get_def(wgs84))
   end
+
+  test "Proj.wgs84 returns a Proj struct" do
+    proj = Proj.wgs84
+
+    assert Map.get(proj, :__struct__) == Proj
+    assert is_binary(Map.get(proj, :pj))
+  end
 end

@@ -38,4 +38,8 @@ defmodule Proj do
   def get_def(_proj) do
     raise "NIF not loaded"
   end
+
+  def wgs84 do
+    raise "NIF not loaded"
+  end
 end
