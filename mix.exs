@@ -1,6 +1,6 @@
 defmodule Mix.Tasks.Compile.Proj do
   def run(_) do
-    0 = Mix.shell.cmd("make proj_nif.so")
+    0 = Mix.shell.cmd("make")
   end
 end
 
