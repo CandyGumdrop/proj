@@ -34,13 +34,13 @@ running on your platform.
 iex> {:ok, bng} = Proj.from_epsg(27700) # British National Grid CRS is EPSG:27700
 {:ok, #Proj<+init=epsg:27700 ...>}
 
-# Convert the British National Grid Northing + Easting of Buckingham Palace into
+# Convert the British National Grid Easting + Northing of Buckingham Palace into
 # a Latitude + Longitude pair
 iex> Proj.to_lat_lng!({529155, 179699}, bng)
 {51.50147938477216, -0.1406319210455952}
 
 # Convert the Latitude + Longitude of Buckingham Palace to its
-# British National Grid Northing + Easting
+# British National Grid Easting + Northing
 iex> Proj.from_lat_lng!({51.501479, -0.140631}, bng)
 {529155.0658918166, 179698.9583449281}
 
