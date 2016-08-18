@@ -2,6 +2,7 @@
 #include <string.h>
 #include <proj_api.h>
 #include <erl_nif.h>
+#include "utils.h"
 
 static int load(ErlNifEnv *env, void **priv, ERL_NIF_TERM info);
 static void unload(ErlNifEnv *env, void *priv);
@@ -22,7 +23,7 @@ static ErlNifFunc nif_funcs[] = {
 };
 
 /* Generate relevant exports for NIFs */
-ERL_NIF_INIT(Elixir.Proj, nif_funcs, load, NULL, NULL, NULL)
+ERL_NIF_INIT(Elixir.Proj, nif_funcs, load, NULL, NULL, unload)
 
 #define WGS84_DEF "+init=epsg:4326"
 
@@ -107,26 +108,6 @@ static ERL_NIF_TERM make_pj_strerrno_binary(ErlNifEnv *env, int perrno)
     memcpy(error_bin.data, error_str, error_len);
 
     return enif_make_binary(env, &error_bin);
-}
-
-/**
- * Get a double from an Erlang NIF term which is either a float or an int.
- *
- * Sets *result to the double value and returns true on success, or false on
- * failure.
- */
-static int get_number(ErlNifEnv *env, ERL_NIF_TERM term, double *result)
-{
-    int result_int;
-
-    if (enif_get_double(env, term, result)) {
-        return 1;
-    } else if (enif_get_int(env, term, &result_int)) {
-        *result = result_int;
-        return 1;
-    } else {
-        return 0;
-    }
 }
 
 /**
