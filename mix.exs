@@ -9,7 +9,7 @@ defmodule Proj.Mixfile do
 
   def project do
     [app: :proj,
-     version: "0.2.0",
+     version: "0.2.1",
      elixir: "~> 1.0",
      compilers: [:proj, :elixir, :app],
      deps: deps,
