@@ -9,7 +9,7 @@ defmodule Proj.Mixfile do
 
   def project do
     [app: :proj,
-     version: "0.1.1",
+     version: "0.2.0",
      elixir: "~> 1.0",
      compilers: [:proj, :elixir, :app],
      deps: deps,
@@ -33,8 +33,7 @@ defmodule Proj.Mixfile do
              "Makefile",
              "test",
              "COPYING",
-             "README.md"]
-    ]
+             "README.md"]]
   end
 
   defp deps do
