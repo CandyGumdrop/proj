@@ -25,7 +25,7 @@ defmodule Proj.Mixfile do
      licenses: ["CC0"],
      links: %{"GitHub" => "https://github.com/candygumdrop/proj",
               "Issues" => "https://github.com/candygumdrop/proj/issues"},
-     files: ["src",
+     files: ["src/*.c",
              "priv/.gitignore",
              "config",
              "lib",
