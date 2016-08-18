@@ -8,17 +8,24 @@ ERLANG_CFLAGS = -I$(ERLANG_PATH)
 
 PROJ_LIBS = -lproj
 
-all: proj_nif.so
+all: proj_nif.so geodesic_nif.so
 
 proj_nif.so: priv/proj_nif.so
+geodesic_nif.so: priv/geodesic_nif.so
 
-priv/proj_nif.so: src/proj_nif.o
+priv/proj_nif.so: src/proj_nif.o src/utils.o
+	$(CC) $(CFLAGS) $^ -o $@ $(PROJ_LIBS) $(NIF_LDFLAGS)
+
+priv/geodesic_nif.so: src/geodesic_nif.o src/utils.o
 	$(CC) $(CFLAGS) $^ -o $@ $(PROJ_LIBS) $(NIF_LDFLAGS)
 
 src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(ERLANG_CFLAGS)
 
+src/proj_nif.o: src/utils.h
+src/geodesic_nif.o: src/utils.h
+
 clean:
 	rm -rf src/*.o priv/*.so
 
-.PHONY: all clean
+.PHONY: all clean proj_nif.so geodesic_nif.so
