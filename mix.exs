@@ -9,7 +9,7 @@ defmodule Proj.Mixfile do
 
   def project do
     [app: :proj,
-     version: "0.2.1",
+     version: "0.2.2",
      elixir: "~> 1.0",
      compilers: [:proj, :elixir, :app],
      deps: deps,
@@ -26,6 +26,7 @@ defmodule Proj.Mixfile do
      links: %{"GitHub" => "https://github.com/candygumdrop/proj",
               "Issues" => "https://github.com/candygumdrop/proj/issues"},
      files: ["src/*.c",
+             "src/*.h",
              "priv/.gitignore",
              "config",
              "lib",
