@@ -98,7 +98,7 @@ defmodule Proj.Geodesic do
       {51.50192539979596, -0.1393868003258145}
   """
   def travel(coords, azimuth, distance) do
-    {result_coords, _azimuth} = direct(wgs84, coords, azimuth, distance)
+    {result_coords, _azimuth} = direct(wgs84(), coords, azimuth, distance)
     result_coords
   end
 
@@ -114,7 +114,7 @@ defmodule Proj.Geodesic do
       341549.6819692767
   """
   def distance(coords_a, coords_b) do
-    {result_distance, _azimuth_a, _azimuth_b} = inverse(wgs84, coords_a, coords_b)
+    {result_distance, _azimuth_a, _azimuth_b} = inverse(wgs84(), coords_a, coords_b)
     result_distance
   end
 

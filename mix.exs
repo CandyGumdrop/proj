@@ -13,10 +13,10 @@ defmodule Proj.Mixfile do
      version: "0.2.2",
      elixir: "~> 1.0",
      compilers: [:proj, :elixir, :app],
-     deps: deps,
+     deps: deps(),
      description: "Elixir coordinate conversion library using OSGeo's PROJ.4",
      name: "proj",
-     package: package]
+     package: package()]
   end
 
   def application, do: []

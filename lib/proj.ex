@@ -153,7 +153,7 @@ defmodule Proj do
       {51.50147938477216, -0.1406319210455952}
   """
   def to_lat_lng!({x, y}, proj) do
-    case transform({x, y, 0}, proj, wgs84) do
+    case transform({x, y, 0}, proj, wgs84()) do
       {:ok, coords} ->
         {lng, lat, _z} = to_deg(coords)
         {lat, lng}
@@ -176,7 +176,7 @@ defmodule Proj do
       {529155.0658918166, 179698.9583449281}
   """
   def from_lat_lng!({lat, lng}, proj) do
-    case transform(to_rad({lng, lat, 0}), wgs84, proj) do
+    case transform(to_rad({lng, lat, 0}), wgs84(), proj) do
       {:ok, {x, y, _z}} ->
         {x, y}
       {:error, error} ->
