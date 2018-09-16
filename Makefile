@@ -8,6 +8,11 @@ ERLANG_CFLAGS = -I$(ERLANG_PATH)
 
 PROJ_LIBS = -lproj
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+NIF_LDFLAGS += -flat_namespace -undefined suppress
+endif
+
 all: proj_nif.so geodesic_nif.so
 
 proj_nif.so: priv/proj_nif.so

@@ -1,6 +1,7 @@
 defmodule Mix.Tasks.Compile.Proj do
   def run(_) do
-    0 = Mix.shell.cmd("make")
+    {result, _error_code} = System.cmd("make", [])
+    Mix.shell.info result
   end
 end
 
