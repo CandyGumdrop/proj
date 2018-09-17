@@ -21,12 +21,11 @@ solving problems such as:
 Before you can install Proj, you must have:
 
 - gcc
-- PROJ.4 newer than 4.9.0
+- PROJ.4 newer than 4.9.0 (PROJ 5+ currently untested)
 
-Proj has currently only been tested on GNU/Linux.  If you are unable to get it
-running on Windows, Mac OS X or any other system, please make in issue on GitHub
-and I will try to work with you to figure out what is necessary to get it
-running on your platform.
+Proj has currently only been tested on GNU/Linux and Mac OS X.  Windows support
+has not yet been tested and may require some small changes to work under a
+Cygwin or MinGW environment.
 
 ## Example Usage
 
