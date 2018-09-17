@@ -20,7 +20,6 @@ defmodule ProjTest do
     {:ok, proj} = Proj.from_def(@wgs84_def)
 
     assert Map.get(proj, :__struct__) == Proj
-    assert is_binary(Map.get(proj, :pj))
   end
 
   test "Proj.transform/3 returns a 3-tuple of coordinates" do
@@ -80,7 +79,6 @@ defmodule ProjTest do
     proj = Proj.wgs84
 
     assert Map.get(proj, :__struct__) == Proj
-    assert is_binary(Map.get(proj, :pj))
   end
 
   test "Proj.to_deg/1 returns correct values" do
@@ -109,14 +107,12 @@ defmodule ProjTest do
     {:ok, proj} = Proj.from_known_def("world", "bng")
 
     assert Map.get(proj, :__struct__) == Proj
-    assert is_binary(Map.get(proj, :pj))
   end
 
   test "Proj.from_epsg/1 returns a Proj struct" do
     {:ok, proj} = Proj.from_epsg(27700)
 
     assert Map.get(proj, :__struct__) == Proj
-    assert is_binary(Map.get(proj, :pj))
   end
 
   test "Proj.to_lat_lng!/2 returns correct values" do

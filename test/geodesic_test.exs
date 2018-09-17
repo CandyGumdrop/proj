@@ -13,14 +13,12 @@ defmodule GeodesicTest do
     geod = Proj.Geodesic.init(@wgs84_eq_radius, @wgs84_flattening)
 
     assert Map.get(geod, :__struct__) == Proj.Geodesic
-    assert is_binary(Map.get(geod, :geod))
   end
 
   test "Proj.Geodesic.wgs84/0 has the correct parameters" do
     wgs84 = Proj.Geodesic.wgs84
 
     assert Map.get(wgs84, :__struct__) == Proj.Geodesic
-    assert is_binary(Map.get(wgs84, :geod))
 
     {a, f} = Proj.Geodesic.params(wgs84)
     assert_in_delta(a, @wgs84_eq_radius, 0.000001)
