@@ -88,8 +88,14 @@ static void proj_resource_dtor(ErlNifEnv *env, void *obj)
 {
     struct proj_resource *proj = (struct proj_resource *)obj;
     if (proj->pj) {
-        pj_ctx_free(pj_get_ctx(proj->pj));
+        /*
+         * pj_free() will want to access pj_get_ctx(proj->pj), thus we cannot
+         * release it immediately. But release it we must, as pj_free() will not
+         * do that for us.
+         */
+        void *ctx = pj_get_ctx(proj->pj);
         pj_free(proj->pj);
+        pj_ctx_free(ctx);
     }
 }
 
