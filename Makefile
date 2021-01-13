@@ -1,4 +1,4 @@
-CFLAGS = -fPIC -Isrc -std=c99 -pedantic -Wall -Wextra -Wno-unused-parameter
+CFLAGS = -fPIC -Isrc -std=c99 -pedantic -Wall -Wextra -Wno-unused-parameter -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 CC ?= gcc
 
 NIF_LDFLAGS = -shared
