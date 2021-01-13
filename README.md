@@ -21,7 +21,20 @@ solving problems such as:
 Before you can install Proj, you must have:
 
 - gcc
-- PROJ.4 newer than 4.9.0 (PROJ 5+ currently untested)
+- PROJ.4 newer than 4.9.0 (PROJ 5+ should work, but this library makes use of
+  the legacy PROJ.4 API.)
+
+### Ubuntu / Debian:
+
+    apt install libproj-dev gcc binutils libc-dev make
+
+### Red Hat / CentOS
+
+    yum install proj-devel binutils gcc glibc-devel make
+
+### macOS
+
+    brew install proj
 
 Proj has currently only been tested on GNU/Linux and Mac OS X.  Windows support
 has not yet been tested and may require some small changes to work under a
